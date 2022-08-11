@@ -1,12 +1,16 @@
 from ninja import Schema
 
-class Message(Schema):
-    message: str
+class UserSchema(Schema):
+    username: str
+    password: str
 
-class Rates(Schema):
+class MessageSchema(Schema):
+    msg: str
+
+class RatesSchema(Schema):
     rates: list
 
-class Rate(Schema):
+class RateSchema(Schema):
     idOp: int
     tasa: float
     email: str
