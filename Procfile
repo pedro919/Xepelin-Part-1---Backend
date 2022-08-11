@@ -1,0 +1,1 @@
+web: gunicorn xepelin_project.wsgi

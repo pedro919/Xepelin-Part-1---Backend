@@ -1,0 +1,4 @@
+.env
+xepelin_api/__pycache__/
+xepelin_api/migrations/__pycache__/
+xepelin_project/__pycache__/
