@@ -49,7 +49,7 @@ def update_gspread_rate_endpoint(request, data: RateSchema):
     try:
         rates_list = download_gspread()
         df = pd.DataFrame(rates_list)
-        row_index = df[df["id Op"] == data.idOp].index.values.astype(int)[0]
+        row_index = df[df["idOp"] == data.idOp].index.values.astype(int)[0]
         df.iloc[[row_index], [1]] = data.tasa
         upload_datafrae_to_gspread(df)
 

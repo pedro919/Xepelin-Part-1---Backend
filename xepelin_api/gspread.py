@@ -15,9 +15,10 @@ def download_gspread():
     sh = gc.open_by_key(os.environ.get("SPREADSHEET_KEY"))
     worksheet = sh.get_worksheet(0)
     df = pd.DataFrame(worksheet.get_all_values())
-    df = df.rename(columns=df.iloc[0]).drop(df.index[0])
-    df["id Op"] = pd.to_numeric(df["id Op"])
-    df["Tasa"] = df["Tasa"].apply(lambda x: float(x.replace(",", ".")))
+    df = df.drop(df.index[0])
+    df.columns = ["idOp", "rate", "email"]
+    df["idOp"] = pd.to_numeric(df["idOp"])
+    df["rate"] = df["rate"].apply(lambda x: float(x.replace(",", ".")))
     return df.to_dict('records')
 
 def upload_datafrae_to_gspread(df):
