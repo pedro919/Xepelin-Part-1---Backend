@@ -51,6 +51,25 @@ def update_gspread_rate_endpoint(request, data: RateSchema):
         df = pd.DataFrame(rates_list)
         row_index = df[df["idOp"] == data.idOp].index.values.astype(int)[0]
         df.iloc[[row_index], [1]] = data.tasa
+        upload_datafrae_to_gspread(df)
+
+    except Exception as e:
+        return 500, MessageSchema(msg=f"Ups... The following error ocurred: {e}")
+
+    else:
+        response = requests.post(os.environ.get("NOTIFIER_URL"), json=data.json(), headers={'Content-type': 'application/json'})
+        if response.status_code == 200:
+            return 200, MessageSchema(msg="ok")
+        else: 
+            return 200, MessageSchema(msg="Rate changed but unable to notify")
+
+
+@api.post("/update_gspread_email",  response={200: MessageSchema, 500: MessageSchema}, auth=AuthBearer())
+def update_gspread_email_endpoint(request, data: RateSchema):
+    try:
+        rates_list = download_gspread()
+        df = pd.DataFrame(rates_list)
+        row_index = df[df["idOp"] == data.idOp].index.values.astype(int)[0]
         df.iloc[[row_index], [2]] = data.email
         upload_datafrae_to_gspread(df)
 
@@ -58,11 +77,7 @@ def update_gspread_rate_endpoint(request, data: RateSchema):
         return 500, MessageSchema(msg=f"Ups... The following error ocurred: {e}")
 
     else:
-        response = requests.post(os.environ.get("NOTIFIER_URL"), json=data.json())
-        if response.status_code == 200:
-            return 200, MessageSchema(msg="ok")
-        else: 
-            return 200, MessageSchema(msg="Rate changed but unable to notify")
+        return 200, MessageSchema(msg="ok")
     
 
 @api.exception_handler(InvalidToken)
